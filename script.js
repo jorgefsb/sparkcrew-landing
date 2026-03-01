@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initFloatingCards();
     initStatsAnimation();
     initScrollIndicator();
+    initCountdownTimer();
 });
 
 // === NAVIGATION ===
@@ -494,3 +495,186 @@ initThemePreferences();
 
 console.log('🚀 SparkCrew landing page loaded successfully!');
 console.log('💡 Try the Konami Code for a special surprise...');
+// === COUNTDOWN TIMER FOR URGENCY ===
+function initCountdownTimer() {
+    const countdownElement = document.createElement('div');
+    countdownElement.className = 'countdown-timer';
+    countdownElement.innerHTML = `
+        <div class="countdown-header">
+            <span class="countdown-icon">⏰</span>
+            <span class="countdown-title">Early Bird Spots Closing Soon!</span>
+        </div>
+        <div class="countdown-display">
+            <div class="countdown-unit">
+                <span class="countdown-value" id="countdown-hours">12</span>
+                <span class="countdown-label">Hours</span>
+            </div>
+            <div class="countdown-separator">:</div>
+            <div class="countdown-unit">
+                <span class="countdown-value" id="countdown-minutes">45</span>
+                <span class="countdown-label">Minutes</span>
+            </div>
+            <div class="countdown-separator">:</div>
+            <div class="countdown-unit">
+                <span class="countdown-value" id="countdown-seconds">30</span>
+                <span class="countdown-label">Seconds</span>
+            </div>
+        </div>
+        <div class="countdown-message">Only 12 spots left at $149/month!</div>
+    `;
+    
+    // Insert after waitlist description
+    const waitlistDescription = document.querySelector('.waitlist-description');
+    if (waitlistDescription) {
+        waitlistDescription.parentNode.insertBefore(countdownElement, waitlistDescription.nextSibling);
+        
+        // Add CSS for countdown
+        const style = document.createElement('style');
+        style.textContent = `
+            .countdown-timer {
+                background: linear-gradient(135deg, var(--color-bg-secondary), var(--color-surface));
+                border: 2px solid var(--color-primary);
+                border-radius: var(--radius-lg);
+                padding: var(--spacing-md);
+                margin: var(--spacing-lg) 0;
+                text-align: center;
+                box-shadow: var(--shadow-glow);
+                animation: pulse 2s infinite;
+            }
+            
+            @keyframes pulse {
+                0%, 100% { box-shadow: var(--shadow-glow); }
+                50% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.5); }
+            }
+            
+            .countdown-header {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: var(--spacing-sm);
+                margin-bottom: var(--spacing-md);
+            }
+            
+            .countdown-icon {
+                font-size: 1.5rem;
+            }
+            
+            .countdown-title {
+                font-family: var(--font-display);
+                font-weight: 700;
+                color: var(--color-primary);
+                font-size: 1.1rem;
+            }
+            
+            .countdown-display {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: var(--spacing-sm);
+                margin-bottom: var(--spacing-md);
+            }
+            
+            .countdown-unit {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                background: var(--color-bg);
+                border-radius: var(--radius-md);
+                padding: var(--spacing-sm);
+                min-width: 70px;
+            }
+            
+            .countdown-value {
+                font-family: var(--font-display);
+                font-size: 2rem;
+                font-weight: 900;
+                color: var(--color-accent);
+                line-height: 1;
+            }
+            
+            .countdown-label {
+                font-size: 0.8rem;
+                color: var(--color-text-secondary);
+                margin-top: var(--spacing-xs);
+            }
+            
+            .countdown-separator {
+                font-family: var(--font-display);
+                font-size: 1.5rem;
+                color: var(--color-primary);
+                margin-bottom: 1rem;
+            }
+            
+            .countdown-message {
+                font-family: var(--font-body);
+                font-weight: 600;
+                color: var(--color-text-primary);
+                font-size: 1rem;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Start countdown
+        startCountdown();
+    }
+}
+
+function startCountdown() {
+    let hours = 12;
+    let minutes = 45;
+    let seconds = 30;
+    
+    function updateCountdown() {
+        const hoursElement = document.getElementById('countdown-hours');
+        const minutesElement = document.getElementById('countdown-minutes');
+        const secondsElement = document.getElementById('countdown-seconds');
+        
+        if (!hoursElement || !minutesElement || !secondsElement) return;
+        
+        // Update display
+        hoursElement.textContent = hours.toString().padStart(2, '0');
+        minutesElement.textContent = minutes.toString().padStart(2, '0');
+        secondsElement.textContent = seconds.toString().padStart(2, '0');
+        
+        // Decrement time
+        if (seconds > 0) {
+            seconds--;
+        } else {
+            if (minutes > 0) {
+                minutes--;
+                seconds = 59;
+            } else {
+                if (hours > 0) {
+                    hours--;
+                    minutes = 59;
+                    seconds = 59;
+                } else {
+                    // Countdown finished
+                    clearInterval(timer);
+                    const countdownElement = document.querySelector('.countdown-timer');
+                    if (countdownElement) {
+                        countdownElement.innerHTML = `
+                            <div class="countdown-finished">
+                                <span class="finished-icon">⏰</span>
+                                <span class="finished-message">Early Bird Spots Have Closed! Next batch: $299/month</span>
+                            </div>
+                        `;
+                    }
+                    return;
+                }
+            }
+        }
+    }
+    
+    // Update immediately
+    updateCountdown();
+    
+    // Update every second
+    const timer = setInterval(updateCountdown, 1000);
+}
+
+// Add countdown timer to initialization
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing initialization code ...
+    initCountdownTimer(); // Add this line
+});

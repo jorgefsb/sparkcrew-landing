@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img" aria-labelledby="title desc">
+  <title id="title">SparkCrew</title><desc id="desc">AI C-Suite partners for Bitrix24.</desc>
+  <defs>
+    <linearGradient id="cosmos" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0f0f12"/><stop offset=".62" stop-color="#1a1a1d"/><stop offset="1" stop-color="#32131a"/></linearGradient>
+    <linearGradient id="ignition" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#e4293b"/><stop offset=".52" stop-color="#c11c37"/><stop offset="1" stop-color="#6c181a"/></linearGradient>
+    <pattern id="stars" width="42" height="42" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.2" fill="#fff" opacity=".06"/></pattern>
+  </defs>
+  <rect width="1200" height="300" rx="24" fill="url(#cosmos)"/><rect width="1200" height="300" rx="24" fill="url(#stars)"/><rect x="2" y="2" width="1196" height="296" rx="22" fill="none" stroke="#c11c37" stroke-width="3"/>
+  <ellipse cx="144" cy="146" rx="118" ry="62" fill="none" stroke="#e4293b" stroke-width="8" transform="rotate(-24 144 146)"/><circle cx="144" cy="146" r="54" fill="url(#ignition)"/><path d="M132 119l7 18 19-7-12 16 16 12-20-3-3 20-7-19-19 7 12-16-16-12 20 3Z" fill="#fff"/><circle cx="224" cy="76" r="7" fill="#6c5ce7"/>
+  <path d="M32 250L1168 48" stroke="#c11c37" stroke-width="2" opacity=".34"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="310" y="62" fill="#e4293b" font-size="14" font-weight="700" letter-spacing="3">SPARKPLUG // PRODUCT CREW</text>
+    <text x="310" y="132" fill="#fff" font-size="58" font-weight="800" letter-spacing="1">SPARKCREW</text>
+    <text x="310" y="180" fill="#e4e4e6" font-size="24" font-weight="600">AI C-SUITE PARTNERS FOR BITRIX24</text>
+    <rect x="310" y="207" width="760" height="3" fill="url(#ignition)"/>
+    <text x="310" y="254" fill="#b8b8bc" font-size="14" letter-spacing="2">STRATEGY  ◆  SYSTEMS  ◆  GROWTH  ◆  FINANCE</text>
+  </g>
+  <g fill="#e4293b"><rect x="1128" y="32" width="10" height="10"/><rect x="1146" y="32" width="10" height="10"/><rect x="1164" y="32" width="10" height="10"/></g>
+</svg>

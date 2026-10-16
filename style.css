@@ -612,3 +612,10 @@ button, input, select { font: inherit; color: inherit; }
     html { scroll-behavior: auto; }
     .btn, .hud, .faq-answer { transition: none; }
 }
+
+/* El Filtro: Moki con movimiento ligero, respeta reducir movimiento; ES/EN con toque de 44 px */
+.lang-switcher a { min-width: 44px; justify-content: center; }
+@media (prefers-reduced-motion: no-preference) {
+    .moki-hero, .foot-moki { animation: moki-float 3.2s ease-in-out infinite; }
+}
+@keyframes moki-float { 50% { translate: 0 -6px; } }

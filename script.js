@@ -1,680 +1,140 @@
-// SparkCrew Landing Page JavaScript
-// Premium interactions and animations
+(function () {
+    'use strict';
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize all interactive components
-    initNavigation();
-    initFAQ();
-    initScrollAnimations();
-    initFormHandling();
-    initFloatingCards();
-    initStatsAnimation();
-    initScrollIndicator();
-    initCountdownTimer();
-});
+    var sw = document.querySelector('.lang-switcher');
+    var hud = document.querySelector('[data-hud]');
+    var burger = hud ? hud.querySelector('.hud__burger') : null;
+    var nav = document.getElementById('hud-nav');
 
-// === NAVIGATION ===
-function initNavigation() {
-    const nav = document.querySelector('.nav');
-    const navHeight = nav.offsetHeight;
-    
-    // Navbar scroll behavior
-    let lastScrollY = window.scrollY;
-    
-    window.addEventListener('scroll', () => {
-        const currentScrollY = window.scrollY;
-        
-        if (currentScrollY > 100) {
-            nav.style.background = 'rgba(10, 10, 15, 0.95)';
-            nav.style.boxShadow = '0 4px 20px rgba(0, 212, 255, 0.1)';
-        } else {
-            nav.style.background = 'rgba(10, 10, 15, 0.85)';
-            nav.style.boxShadow = 'none';
+    function setLang(lang) {
+        document.documentElement.lang = lang;
+        document.querySelectorAll('[data-es]').forEach(function (el) {
+            var v = el.getAttribute('data-' + lang);
+            if (!v) return;
+            if (el.tagName === 'META') el.setAttribute('content', v);
+            else if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.setAttribute('placeholder', v);
+            else if (el.tagName === 'OPTION') el.textContent = v;
+            else el.innerHTML = v;
+        });
+        if (sw) {
+            sw.querySelectorAll('a[lang]').forEach(function (a) {
+                a.classList.toggle('active', a.lang === lang);
+            });
         }
-        
-        lastScrollY = currentScrollY;
-    });
-    
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
+        try { localStorage.setItem('preferred-lang', lang); } catch (_) {}
+    }
+
+    if (sw) {
+        sw.addEventListener('click', function (e) {
+            var a = e.target.closest('a[lang]');
+            if (!a) return;
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                const targetPosition = target.offsetTop - navHeight - 20;
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
+            var url = new URL(window.location.href);
+            url.searchParams.set('lang', a.lang);
+            history.replaceState({}, '', url);
+            setLang(a.lang);
+        });
+    }
+
+    var saved = null;
+    try { saved = localStorage.getItem('preferred-lang'); } catch (_) {}
+    var urlLang = new URLSearchParams(location.search).get('lang');
+    var browser = (navigator.language || 'es').toLowerCase().indexOf('es') === 0 ? 'es' : 'en';
+    setLang(['es', 'en'].indexOf(urlLang) > -1 ? urlLang : (saved || browser));
+
+    if (hud && burger && nav) {
+        burger.addEventListener('click', function () {
+            var open = burger.getAttribute('aria-expanded') !== 'true';
+            burger.setAttribute('aria-expanded', String(open));
+            nav.classList.toggle('is-open', open);
+        });
+        nav.addEventListener('click', function (e) {
+            if (e.target.closest('a')) {
+                burger.setAttribute('aria-expanded', 'false');
+                nav.classList.remove('is-open');
             }
         });
-    });
-}
+        var scrolled = false;
+        window.addEventListener('scroll', function () {
+            var next = window.scrollY > 24;
+            if (next !== scrolled) {
+                scrolled = next;
+                hud.classList.toggle('is-scrolled', scrolled);
+            }
+        }, { passive: true });
+    }
 
-// === FAQ ACCORDION ===
-function initFAQ() {
-    const faqItems = document.querySelectorAll('.faq-item');
-    
-    faqItems.forEach(item => {
-        const question = item.querySelector('.faq-question');
-        const answer = item.querySelector('.faq-answer');
-        
-        question.addEventListener('click', () => {
-            const isActive = item.classList.contains('active');
-            
-            // Close all FAQ items
-            faqItems.forEach(otherItem => {
-                otherItem.classList.remove('active');
-                const otherAnswer = otherItem.querySelector('.faq-answer');
-                otherAnswer.style.maxHeight = '0';
+    var chrome = document.querySelector('.site-return-bar');
+    var offset = ((chrome ? chrome.offsetHeight : 0) + (hud ? hud.offsetHeight : 0) + 12);
+
+    document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+        anchor.addEventListener('click', function (e) {
+            var id = this.getAttribute('href');
+            if (!id || id === '#') return;
+            var target = document.querySelector(id);
+            if (!target) return;
+            e.preventDefault();
+            window.scrollTo({
+                top: target.getBoundingClientRect().top + window.scrollY - offset,
+                behavior: 'smooth'
             });
-            
-            // Open current item if it wasn't active
+        });
+    });
+
+    function initStatsAnimation() {
+        var stats = document.querySelectorAll('.stat-number');
+        if (!stats.length) return;
+
+        var animateStats = function () {
+            stats.forEach(function (stat) {
+                var text = stat.textContent.trim();
+                if (text === '∞') return;
+                var match = text.match(/^(\D*)(\d+)(.*)$/);
+                if (!match) return;
+                var prefix = match[1];
+                var finalValue = parseInt(match[2], 10);
+                var suffix = match[3];
+                var current = 0;
+                var increment = Math.max(1, Math.ceil(finalValue / 20) || 1);
+                var counter = setInterval(function () {
+                    current += increment;
+                    if (current >= finalValue) {
+                        current = finalValue;
+                        clearInterval(counter);
+                    }
+                    stat.textContent = prefix + current + suffix;
+                }, 100);
+            });
+        };
+
+        var heroStats = document.querySelector('.hero-stats');
+        if (!heroStats) return;
+        var heroObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                setTimeout(animateStats, 1000);
+                heroObserver.unobserve(entry.target);
+            });
+        });
+        heroObserver.observe(heroStats);
+    }
+    initStatsAnimation();
+
+    document.querySelectorAll('.faq-item').forEach(function (item) {
+        var question = item.querySelector('.faq-question');
+        var answer = item.querySelector('.faq-answer');
+        if (!question || !answer) return;
+        question.addEventListener('click', function () {
+            var isActive = item.classList.contains('is-open');
+            document.querySelectorAll('.faq-item').forEach(function (other) {
+                other.classList.remove('is-open');
+                var otherAnswer = other.querySelector('.faq-answer');
+                if (otherAnswer) otherAnswer.style.maxHeight = '0';
+            });
             if (!isActive) {
-                item.classList.add('active');
+                item.classList.add('is-open');
                 answer.style.maxHeight = answer.scrollHeight + 'px';
             }
         });
     });
-}
-
-// === SCROLL ANIMATIONS ===
-function initScrollAnimations() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
-                
-                // Special handling for different elements
-                if (entry.target.classList.contains('step')) {
-                    animateStep(entry.target);
-                } else if (entry.target.classList.contains('partner-card')) {
-                    animatePartnerCard(entry.target);
-                } else if (entry.target.classList.contains('feature')) {
-                    animateFeature(entry.target);
-                } else if (entry.target.classList.contains('pricing-card')) {
-                    animatePricingCard(entry.target);
-                }
-            }
-        });
-    }, observerOptions);
-    
-    // Observe elements for animation
-    document.querySelectorAll('.step, .partner-card, .feature, .pricing-card, .section-header').forEach(el => {
-        observer.observe(el);
-    });
-}
-
-function animateStep(step) {
-    const visual = step.querySelector('.step-visual');
-    if (visual) {
-        setTimeout(() => {
-            visual.style.transform = 'scale(1.05)';
-            setTimeout(() => {
-                visual.style.transform = 'scale(1)';
-            }, 200);
-        }, 300);
-    }
-}
-
-function animatePartnerCard(card) {
-    const avatar = card.querySelector('.partner-avatar');
-    const skills = card.querySelectorAll('.skill');
-    
-    if (avatar) {
-        setTimeout(() => {
-            avatar.style.transform = 'scale(1.1) rotate(5deg)';
-            setTimeout(() => {
-                avatar.style.transform = 'scale(1) rotate(0deg)';
-            }, 300);
-        }, 200);
-    }
-    
-    skills.forEach((skill, index) => {
-        setTimeout(() => {
-            skill.style.transform = 'translateY(0)';
-            skill.style.opacity = '1';
-        }, 400 + (index * 100));
-    });
-}
-
-function animateFeature(feature) {
-    const icon = feature.querySelector('.feature-icon');
-    if (icon) {
-        setTimeout(() => {
-            icon.style.transform = 'scale(1.2)';
-            setTimeout(() => {
-                icon.style.transform = 'scale(1)';
-            }, 300);
-        }, 200);
-    }
-}
-
-function animatePricingCard(card) {
-    const price = card.querySelector('.price-amount');
-    if (price) {
-        const finalValue = price.textContent;
-        let current = 0;
-        const increment = finalValue === '∞' ? 0 : Math.ceil(finalValue / 30);
-        
-        if (finalValue !== '∞') {
-            const counter = setInterval(() => {
-                current += increment;
-                if (current >= finalValue) {
-                    current = finalValue;
-                    clearInterval(counter);
-                }
-                price.textContent = current;
-            }, 50);
-        }
-    }
-}
-
-// === FLOATING CARDS ANIMATION ===
-function initFloatingCards() {
-    const cards = document.querySelectorAll('.floating-card');
-    
-    cards.forEach((card, index) => {
-        // Add hover interactions
-        card.addEventListener('mouseenter', () => {
-            card.style.transform = 'translateY(-15px) scale(1.05)';
-            card.style.zIndex = '10';
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = '';
-            card.style.zIndex = '';
-        });
-        
-        // Random floating motion
-        setInterval(() => {
-            if (!card.matches(':hover')) {
-                const randomX = (Math.random() - 0.5) * 10;
-                const randomY = (Math.random() - 0.5) * 10;
-                card.style.transform = `translate(${randomX}px, ${randomY}px)`;
-                
-                setTimeout(() => {
-                    if (!card.matches(':hover')) {
-                        card.style.transform = '';
-                    }
-                }, 2000);
-            }
-        }, 3000 + (index * 1000));
-    });
-}
-
-// === STATS COUNTER ANIMATION ===
-function initStatsAnimation() {
-    const stats = document.querySelectorAll('.stat-number');
-    
-    const animateStats = () => {
-        stats.forEach(stat => {
-            const text = stat.textContent;
-            if (text === '∞') return;
-            
-            const finalValue = parseInt(text) || 0;
-            let current = 0;
-            const increment = Math.ceil(finalValue / 20);
-            
-            const counter = setInterval(() => {
-                current += increment;
-                if (current >= finalValue) {
-                    current = finalValue;
-                    clearInterval(counter);
-                }
-                stat.textContent = current;
-            }, 100);
-        });
-    };
-    
-    // Trigger animation when hero section is visible
-    const heroObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                setTimeout(animateStats, 1000);
-                heroObserver.unobserve(entry.target);
-            }
-        });
-    });
-    
-    const heroStats = document.querySelector('.hero-stats');
-    if (heroStats) {
-        heroObserver.observe(heroStats);
-    }
-}
-
-// === SCROLL INDICATOR ===
-function initScrollIndicator() {
-    const scrollIndicator = document.querySelector('.scroll-indicator');
-    if (!scrollIndicator) return;
-    
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const rate = scrolled / (document.body.scrollHeight - window.innerHeight);
-        const opacity = 1 - (rate * 2);
-        
-        scrollIndicator.parentElement.style.opacity = Math.max(0, opacity);
-    });
-}
-
-// === FORM HANDLING ===
-function initFormHandling() {
-    const form = document.querySelector('.waitlist-form');
-    const submitButton = document.querySelector('.form-submit');
-    
-    if (!form || !submitButton) return;
-    
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const formData = new FormData(form);
-        const originalText = submitButton.innerHTML;
-        
-        // Update button state
-        submitButton.innerHTML = '<span>Joining...</span>';
-        submitButton.disabled = true;
-        submitButton.style.opacity = '0.7';
-        
-        try {
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-            
-            if (response.ok) {
-                showFormSuccess();
-            } else {
-                throw new Error('Form submission failed');
-            }
-        } catch (error) {
-            console.error('Form submission error:', error);
-            showFormError();
-        } finally {
-            // Reset button state
-            setTimeout(() => {
-                submitButton.innerHTML = originalText;
-                submitButton.disabled = false;
-                submitButton.style.opacity = '1';
-            }, 2000);
-        }
-    });
-}
-
-function showFormSuccess() {
-    const form = document.querySelector('.waitlist-form');
-    const originalContent = form.innerHTML;
-    
-    form.innerHTML = `
-        <div style="text-align: center; padding: 2rem;">
-            <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--color-success);">✓</div>
-            <h3 style="margin-bottom: 1rem; color: var(--color-success);">Welcome to the Future!</h3>
-            <p style="color: var(--color-text-secondary);">You're on the waitlist. We'll be in touch soon with your early access invitation.</p>
-        </div>
-    `;
-    
-    // Add success animation
-    form.style.background = 'linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.1))';
-    form.style.border = '2px solid var(--color-success)';
-    
-    // Reset after 5 seconds
-    setTimeout(() => {
-        form.innerHTML = originalContent;
-        form.style.background = '';
-        form.style.border = '';
-        initFormHandling(); // Re-initialize form handling
-    }, 5000);
-}
-
-function showFormError() {
-    const submitButton = document.querySelector('.form-submit');
-    const originalText = submitButton.innerHTML;
-    
-    submitButton.innerHTML = '<span>Try Again</span>';
-    submitButton.style.background = 'linear-gradient(135deg, var(--color-error), #cc2244)';
-    
-    setTimeout(() => {
-        submitButton.innerHTML = originalText;
-        submitButton.style.background = '';
-    }, 3000);
-}
-
-// === ENHANCED HOVER EFFECTS ===
-document.addEventListener('DOMContentLoaded', function() {
-    // Add enhanced hover effects to buttons
-    const buttons = document.querySelectorAll('.btn-primary, .btn-secondary, .pricing-cta, .nav-cta');
-    
-    buttons.forEach(button => {
-        button.addEventListener('mouseenter', function() {
-            this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-        });
-        
-        button.addEventListener('mouseleave', function() {
-            this.style.transition = 'all 0.3s ease-out';
-        });
-    });
-    
-    // Add magnetic effect to partner cards
-    const partnerCards = document.querySelectorAll('.partner-card');
-    
-    partnerCards.forEach(card => {
-        card.addEventListener('mousemove', function(e) {
-            const rect = this.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = (y - centerY) / 20;
-            const rotateY = (centerX - x) / 20;
-            
-            this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = '';
-        });
-    });
-});
-
-// === PERFORMANCE OPTIMIZATION ===
-// Throttle scroll events
-function throttle(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// Apply throttling to scroll events
-const throttledScrollHandler = throttle(() => {
-    // Scroll-related logic here
-}, 16); // 60fps
-
-// === ACCESSIBILITY IMPROVEMENTS ===
-document.addEventListener('keydown', function(e) {
-    // Add keyboard navigation for FAQ
-    if (e.key === 'Enter' || e.key === ' ') {
-        const focusedElement = document.activeElement;
-        if (focusedElement.classList.contains('faq-question')) {
-            e.preventDefault();
-            focusedElement.click();
-        }
-    }
-});
-
-// === EASTER EGGS ===
-let konamiCode = [];
-const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
-
-document.addEventListener('keydown', function(e) {
-    konamiCode.push(e.code);
-    
-    if (konamiCode.length > konamiSequence.length) {
-        konamiCode.shift();
-    }
-    
-    if (JSON.stringify(konamiCode) === JSON.stringify(konamiSequence)) {
-        activateEasterEgg();
-        konamiCode = [];
-    }
-});
-
-function activateEasterEgg() {
-    // Add special effects
-    document.body.style.animation = 'rainbow 2s infinite';
-    
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes rainbow {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
-        }
-    `;
-    document.head.appendChild(style);
-    
-    // Show special message
-    const message = document.createElement('div');
-    message.innerHTML = '🦇 Alfred approves! The SparkCrew is strong with you. 🦇';
-    message.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-        color: var(--color-bg);
-        padding: 2rem;
-        border-radius: var(--radius-lg);
-        font-size: 1.2rem;
-        font-weight: bold;
-        text-align: center;
-        z-index: 10000;
-        box-shadow: var(--shadow-glow);
-    `;
-    
-    document.body.appendChild(message);
-    
-    setTimeout(() => {
-        document.body.style.animation = '';
-        message.remove();
-        style.remove();
-    }, 5000);
-}
-
-// === INITIALIZE CSS VARIABLES BASED ON USER PREFERENCES ===
-function initThemePreferences() {
-    // Check for reduced motion preference
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        document.documentElement.style.setProperty('--transition-fast', '0.01ms');
-        document.documentElement.style.setProperty('--transition-smooth', '0.01ms');
-        document.documentElement.style.setProperty('--transition-slow', '0.01ms');
-    }
-    
-    // Check for high contrast preference
-    if (window.matchMedia('(prefers-contrast: high)').matches) {
-        document.documentElement.style.setProperty('--color-border', '#ffffff');
-        document.documentElement.style.setProperty('--color-text-secondary', '#ffffff');
-    }
-}
-
-// Initialize theme preferences
-initThemePreferences();
-
-console.log('🚀 SparkCrew landing page loaded successfully!');
-console.log('💡 Try the Konami Code for a special surprise...');
-// === COUNTDOWN TIMER FOR URGENCY ===
-function initCountdownTimer() {
-    const countdownElement = document.createElement('div');
-    countdownElement.className = 'countdown-timer';
-    countdownElement.innerHTML = `
-        <div class="countdown-header">
-            <span class="countdown-icon">⏰</span>
-            <span class="countdown-title">Early Bird Spots Closing Soon!</span>
-        </div>
-        <div class="countdown-display">
-            <div class="countdown-unit">
-                <span class="countdown-value" id="countdown-hours">12</span>
-                <span class="countdown-label">Hours</span>
-            </div>
-            <div class="countdown-separator">:</div>
-            <div class="countdown-unit">
-                <span class="countdown-value" id="countdown-minutes">45</span>
-                <span class="countdown-label">Minutes</span>
-            </div>
-            <div class="countdown-separator">:</div>
-            <div class="countdown-unit">
-                <span class="countdown-value" id="countdown-seconds">30</span>
-                <span class="countdown-label">Seconds</span>
-            </div>
-        </div>
-        <div class="countdown-message">Only 12 spots left at $149/month!</div>
-    `;
-    
-    // Insert after waitlist description
-    const waitlistDescription = document.querySelector('.waitlist-description');
-    if (waitlistDescription) {
-        waitlistDescription.parentNode.insertBefore(countdownElement, waitlistDescription.nextSibling);
-        
-        // Add CSS for countdown
-        const style = document.createElement('style');
-        style.textContent = `
-            .countdown-timer {
-                background: linear-gradient(135deg, var(--color-bg-secondary), var(--color-surface));
-                border: 2px solid var(--color-primary);
-                border-radius: var(--radius-lg);
-                padding: var(--spacing-md);
-                margin: var(--spacing-lg) 0;
-                text-align: center;
-                box-shadow: var(--shadow-glow);
-                animation: pulse 2s infinite;
-            }
-            
-            @keyframes pulse {
-                0%, 100% { box-shadow: var(--shadow-glow); }
-                50% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.5); }
-            }
-            
-            .countdown-header {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: var(--spacing-sm);
-                margin-bottom: var(--spacing-md);
-            }
-            
-            .countdown-icon {
-                font-size: 1.5rem;
-            }
-            
-            .countdown-title {
-                font-family: var(--font-display);
-                font-weight: 700;
-                color: var(--color-primary);
-                font-size: 1.1rem;
-            }
-            
-            .countdown-display {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: var(--spacing-sm);
-                margin-bottom: var(--spacing-md);
-            }
-            
-            .countdown-unit {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                background: var(--color-bg);
-                border-radius: var(--radius-md);
-                padding: var(--spacing-sm);
-                min-width: 70px;
-            }
-            
-            .countdown-value {
-                font-family: var(--font-display);
-                font-size: 2rem;
-                font-weight: 900;
-                color: var(--color-accent);
-                line-height: 1;
-            }
-            
-            .countdown-label {
-                font-size: 0.8rem;
-                color: var(--color-text-secondary);
-                margin-top: var(--spacing-xs);
-            }
-            
-            .countdown-separator {
-                font-family: var(--font-display);
-                font-size: 1.5rem;
-                color: var(--color-primary);
-                margin-bottom: 1rem;
-            }
-            
-            .countdown-message {
-                font-family: var(--font-body);
-                font-weight: 600;
-                color: var(--color-text-primary);
-                font-size: 1rem;
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Start countdown
-        startCountdown();
-    }
-}
-
-function startCountdown() {
-    let hours = 12;
-    let minutes = 45;
-    let seconds = 30;
-    
-    function updateCountdown() {
-        const hoursElement = document.getElementById('countdown-hours');
-        const minutesElement = document.getElementById('countdown-minutes');
-        const secondsElement = document.getElementById('countdown-seconds');
-        
-        if (!hoursElement || !minutesElement || !secondsElement) return;
-        
-        // Update display
-        hoursElement.textContent = hours.toString().padStart(2, '0');
-        minutesElement.textContent = minutes.toString().padStart(2, '0');
-        secondsElement.textContent = seconds.toString().padStart(2, '0');
-        
-        // Decrement time
-        if (seconds > 0) {
-            seconds--;
-        } else {
-            if (minutes > 0) {
-                minutes--;
-                seconds = 59;
-            } else {
-                if (hours > 0) {
-                    hours--;
-                    minutes = 59;
-                    seconds = 59;
-                } else {
-                    // Countdown finished
-                    clearInterval(timer);
-                    const countdownElement = document.querySelector('.countdown-timer');
-                    if (countdownElement) {
-                        countdownElement.innerHTML = `
-                            <div class="countdown-finished">
-                                <span class="finished-icon">⏰</span>
-                                <span class="finished-message">Early Bird Spots Have Closed! Next batch: $299/month</span>
-                            </div>
-                        `;
-                    }
-                    return;
-                }
-            }
-        }
-    }
-    
-    // Update immediately
-    updateCountdown();
-    
-    // Update every second
-    const timer = setInterval(updateCountdown, 1000);
-}
-
-// Add countdown timer to initialization
-document.addEventListener('DOMContentLoaded', function() {
-    // ... existing initialization code ...
-    initCountdownTimer(); // Add this line
-});
+})();

@@ -2,52 +2,66 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gracias | SparkCrew</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title data-es="¡Gracias! | Lista de espera de SparkCrew" data-en="Thank You! | SparkCrew Waitlist">¡Gracias! | Lista de espera de SparkCrew</title>
     <link rel="stylesheet" href="style.css">
-    <meta name="description" content="Ya estás en la lista de espera de SparkCrew.">
+    <meta name="description" content="Ya estás en la lista de espera de SparkCrew." data-es="Ya estás en la lista de espera de SparkCrew." data-en="You're on the SparkCrew waitlist.">
 </head>
 <body>
-    <nav class="nav">
-        <div class="nav-top">
-            <a href="https://jorgesuarez.com.mx/" class="home-site-link">← JorgeSuarez.com.mx</a>
-            <div class="lang-switch" role="group" aria-label="Idioma">
-                <button type="button" class="lang-btn" data-lang="es" aria-pressed="true">ES</button>
-                <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
-            </div>
-        </div>
-        <div class="nav-main">
-            <a class="brand-signature" href="https://jorgesuarez.com.mx/">
-                <img src="assets/brand/signature/JorgeSuarez-A-oscuro-bicolor.svg" alt="JorgeSuarez.com.mx" width="240" height="58">
-            </a>
-            <span class="product-name">SparkCrew</span>
-        </div>
-    </nav>
+    <a class="skip" href="#thanks" data-es="Saltar al contenido" data-en="Skip to content">Saltar al contenido</a>
 
-    <section class="hero">
-        <div class="container hero-grid">
-            <div class="hero-content">
-                <h1 data-es="Ya estás en la lista" data-en="You are on the waitlist">Ya estás en la lista</h1>
-                <p class="hero-description" data-es="Gracias por unirte al acceso temprano de SparkCrew. Te vamos a escribir cuando el C-Suite de IA para Bitrix24 esté listo." data-en="Thank you for joining the SparkCrew early access waitlist. We will write you when the AI C-Suite for Bitrix24 is ready.">Gracias por unirte al acceso temprano de SparkCrew. Te vamos a escribir cuando el C-Suite de IA para Bitrix24 esté listo.</p>
-                <div class="hero-actions">
-                    <a href="https://sparkcrew.jorgesuarez.com.mx/" class="btn-primary" data-es="Volver a SparkCrew" data-en="Back to SparkCrew">Volver a SparkCrew</a>
-                    <a href="https://jorgesuarez.com.mx/" class="btn-secondary">← JorgeSuarez.com.mx</a>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <img class="moki" src="assets/brand/moki-parche-derecho.png" alt="Moki" width="420" height="448">
-            </div>
-        </div>
-    </section>
+    <div class="site-return-bar">
+        <a class="site-return" href="https://jorgesuarez.com.mx/">← JorgeSuarez.com.mx</a>
+    </div>
 
-    <footer class="footer">
+    <header class="hud" data-hud>
+        <a class="hud__brand" href="https://jorgesuarez.com.mx/" aria-label="JorgeSuarez.com.mx">
+            <span class="js-wordmark">JorgeSuarez<span>.com.mx</span></span>
+        </a>
+        <nav class="hud__nav" id="hud-nav" aria-label="Principal"><a data-es="Trayectoria" data-en="Journey" href="https://jorgesuarez.com.mx/#journey">Trayectoria</a><a data-es="Amber México" data-en="Amber Mexico" href="https://jorgesuarez.com.mx/#amber">Amber México</a><a data-es="Productos" data-en="Products" href="https://jorgesuarez.com.mx/#ecosystem">Productos</a><a data-es="Frameworks" data-en="Frameworks" href="https://jorgesuarez.com.mx/#frameworks">Frameworks</a><a data-es="Conecta" data-en="Connect" href="https://jorgesuarez.com.mx/#contact">Conecta</a></nav>
+        <div class="hud__right">
+            <div class="lang-switcher" role="group" aria-label="Idioma"><a href="#" class="es-btn" lang="es">ES</a><span aria-hidden="true">|</span><a href="#" class="en-btn" lang="en">EN</a></div>
+            <a class="btn btn--primary btn--sm hud__cta" href="https://vip.jorgesuarez.com.mx/" target="_blank" rel="noopener"><span data-es="Acceso al Club" data-en="Club Access">Acceso al Club</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></a>
+            <button class="hud__burger" type="button" aria-expanded="false" aria-controls="hud-nav" aria-label="Menú"><span></span><span></span></button>
+        </div>
+    </header>
+
+    <main class="thanks" id="thanks">
         <div class="container">
-            <div class="footer-bottom">
-                <a href="https://jorgesuarez.com.mx/" class="home-site-link">← JorgeSuarez.com.mx</a>
-                <p>SparkCrew</p>
+            <div class="thanks-card">
+                <div class="success-icon" aria-hidden="true">🎉</div>
+                <h1 data-es="¡Ya estás en la lista de espera!" data-en="You're on the Waitlist!">¡Ya estás en la lista de espera!</h1>
+                <p data-es="Gracias por unirte a la lista de espera de acceso anticipado de SparkCrew. Nos emociona tenerte a bordo mientras preparamos el lanzamiento de nuestros partners de C-Suite de IA para Bitrix24." data-en="Thank you for joining the SparkCrew early access waitlist. We're excited to have you on board as we prepare to launch our AI C-Suite partners for Bitrix24.">Gracias por unirte a la lista de espera de acceso anticipado de SparkCrew. Nos emociona tenerte a bordo mientras preparamos el lanzamiento de nuestros partners de C-Suite de IA para Bitrix24.</p>
+
+                <div class="thanks-highlight">
+                    <p data-es="Como miembro de acceso anticipado, vas a recibir:<br>• Precio especial de lanzamiento (hasta 50% de descuento)<br>• Onboarding prioritario<br>• Canales directos de feedback con nuestro equipo" data-en="As an early access member, you'll receive:<br>• Special launch pricing (up to 50% off)<br>• Priority onboarding<br>• Direct feedback channels with our team">Como miembro de acceso anticipado, vas a recibir:<br>• Precio especial de lanzamiento (hasta 50% de descuento)<br>• Onboarding prioritario<br>• Canales directos de feedback con nuestro equipo</p>
+                </div>
+
+                <div class="thanks-next">
+                    <h3 data-es="¿Qué sigue?" data-en="What happens next?">¿Qué sigue?</h3>
+                    <ul>
+                        <li data-es="Vas a recibir un correo de confirmación en breve" data-en="You'll receive a confirmation email shortly">Vas a recibir un correo de confirmación en breve</li>
+                        <li data-es="Te avisamos cuando empiece el acceso anticipado (en 2 semanas)" data-en="We'll notify you when early access begins (within 2 weeks)">Te avisamos cuando empiece el acceso anticipado (en 2 semanas)</li>
+                        <li data-es="Vas a recibir actualizaciones exclusivas de features nuevas y del timeline de lanzamiento" data-en="You'll get exclusive updates about new features and launch timeline">Vas a recibir actualizaciones exclusivas de features nuevas y del timeline de lanzamiento</li>
+                        <li data-es="Acceso prioritario para agendar tu sesión de onboarding" data-en="Priority access to schedule your onboarding session">Acceso prioritario para agendar tu sesión de onboarding</li>
+                    </ul>
+                </div>
+
+                <p data-es="¿Dudas? Responde el correo de confirmación o visita <a href=&quot;https://sparkcrew.jorgesuarez.com.mx&quot;>sparkcrew.jorgesuarez.com.mx</a>" data-en="Have questions? Reply to the confirmation email or visit <a href=&quot;https://sparkcrew.jorgesuarez.com.mx&quot;>sparkcrew.jorgesuarez.com.mx</a>">¿Dudas? Responde el correo de confirmación o visita <a href="https://sparkcrew.jorgesuarez.com.mx">sparkcrew.jorgesuarez.com.mx</a></p>
+
+                <a href="https://sparkcrew.jorgesuarez.com.mx" class="btn btn--primary" data-es="Volver a SparkCrew" data-en="Back to SparkCrew">Volver a SparkCrew</a>
             </div>
         </div>
-    </footer>
+    </main>
+
+    <div class="site-foot">
+        <img class="foot-moki" src="assets/brand/moki-parche-derecho.png" alt="" width="72" height="77">
+        <footer class="foot">
+            <p class="foot__love">Hecho con amor ❤️🎮 por JorgeSuarez.com.mx</p>
+            <p class="foot__values" data-es="Jorge Suárez | © 2026 | Built on our values of Kaizen &amp; Play." data-en="Jorge Suárez | © 2026 | Built on our values of Kaizen &amp; Play.">Jorge Suárez | © 2026 | Built on our values of Kaizen &amp; Play.</p>
+        </footer>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

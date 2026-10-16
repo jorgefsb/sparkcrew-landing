@@ -81,6 +81,45 @@
         });
     });
 
+    function initStatsAnimation() {
+        var stats = document.querySelectorAll('.stat-number');
+        if (!stats.length) return;
+
+        var animateStats = function () {
+            stats.forEach(function (stat) {
+                var text = stat.textContent.trim();
+                if (text === '∞') return;
+                var match = text.match(/^(\D*)(\d+)(.*)$/);
+                if (!match) return;
+                var prefix = match[1];
+                var finalValue = parseInt(match[2], 10);
+                var suffix = match[3];
+                var current = 0;
+                var increment = Math.max(1, Math.ceil(finalValue / 20) || 1);
+                var counter = setInterval(function () {
+                    current += increment;
+                    if (current >= finalValue) {
+                        current = finalValue;
+                        clearInterval(counter);
+                    }
+                    stat.textContent = prefix + current + suffix;
+                }, 100);
+            });
+        };
+
+        var heroStats = document.querySelector('.hero-stats');
+        if (!heroStats) return;
+        var heroObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                setTimeout(animateStats, 1000);
+                heroObserver.unobserve(entry.target);
+            });
+        });
+        heroObserver.observe(heroStats);
+    }
+    initStatsAnimation();
+
     document.querySelectorAll('.faq-item').forEach(function (item) {
         var question = item.querySelector('.faq-question');
         var answer = item.querySelector('.faq-answer');

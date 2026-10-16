@@ -1,177 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thank You! | SparkCrew Waitlist</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            text-align: center;
-        }
-        
-        .success-icon {
-            font-size: 80px;
-            margin-bottom: 20px;
-        }
-        
-        h1 {
-            color: #333;
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        p {
-            color: #666;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-        
-        .highlight {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            margin: 25px 0;
-            font-weight: bold;
-        }
-        
-        .next-steps {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 25px 0;
-            text-align: left;
-        }
-        
-        .next-steps h3 {
-            color: #333;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
-        
-        .next-steps ul {
-            list-style: none;
-            padding-left: 0;
-        }
-        
-        .next-steps li {
-            padding: 8px 0;
-            color: #555;
-            position: relative;
-            padding-left: 25px;
-        }
-        
-        .next-steps li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #667eea;
-            font-weight: bold;
-        }
-        
-        .back-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-top: 20px;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .back-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
-        }
-        
-        .sparkcrew-logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            font-weight: 900;
-            margin-bottom: 20px;
-        }
-        
-        .spark {
-            color: #667eea;
-        }
-        
-        .crew {
-            color: #764ba2;
-        }
-        
-        @media (max-width: 600px) {
-            .container {
-                padding: 25px;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-        }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>Gracias | SparkCrew</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="description" content="Ya estás en la lista de espera de SparkCrew.">
 </head>
 <body>
-    <div class="container">
-        <div class="sparkcrew-logo">
-            <span class="spark">Spark</span><span class="crew">Crew</span>
+    <nav class="nav">
+        <div class="nav-top">
+            <a href="https://jorgesuarez.com.mx/" class="home-site-link">← JorgeSuarez.com.mx</a>
+            <div class="lang-switch" role="group" aria-label="Idioma">
+                <button type="button" class="lang-btn" data-lang="es" aria-pressed="true">ES</button>
+                <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+            </div>
         </div>
-        
-        <div class="success-icon">🎉</div>
-        
-        <h1>You're on the Waitlist!</h1>
-        
-        <p>Thank you for joining the SparkCrew early access waitlist. We're excited to have you on board as we prepare to launch our AI C-Suite partners for Bitrix24.</p>
-        
-        <div class="highlight">
-            <p>As an early access member, you'll receive:<br>
-            • Special launch pricing (up to 50% off)<br>
-            • Priority onboarding<br>
-            • Direct feedback channels with our team</p>
+        <div class="nav-main">
+            <a class="brand-signature" href="https://jorgesuarez.com.mx/">
+                <img src="assets/brand/signature/JorgeSuarez-A-oscuro-bicolor.svg" alt="JorgeSuarez.com.mx" width="240" height="58">
+            </a>
+            <span class="product-name">SparkCrew</span>
         </div>
-        
-        <div class="next-steps">
-            <h3>What happens next?</h3>
-            <ul>
-                <li>You'll receive a confirmation email shortly</li>
-                <li>We'll notify you when early access begins (within 2 weeks)</li>
-                <li>You'll get exclusive updates about new features and launch timeline</li>
-                <li>Priority access to schedule your onboarding session</li>
-            </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <h1 data-es="Ya estás en la lista" data-en="You are on the waitlist">Ya estás en la lista</h1>
+                <p class="hero-description" data-es="Gracias por unirte al acceso temprano de SparkCrew. Te vamos a escribir cuando el C-Suite de IA para Bitrix24 esté listo." data-en="Thank you for joining the SparkCrew early access waitlist. We will write you when the AI C-Suite for Bitrix24 is ready.">Gracias por unirte al acceso temprano de SparkCrew. Te vamos a escribir cuando el C-Suite de IA para Bitrix24 esté listo.</p>
+                <div class="hero-actions">
+                    <a href="https://sparkcrew.jorgesuarez.com.mx/" class="btn-primary" data-es="Volver a SparkCrew" data-en="Back to SparkCrew">Volver a SparkCrew</a>
+                    <a href="https://jorgesuarez.com.mx/" class="btn-secondary">← JorgeSuarez.com.mx</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <img class="moki" src="assets/brand/moki-parche-derecho.png" alt="Moki" width="420" height="448">
+            </div>
         </div>
-        
-        <p>Have questions? Reply to the confirmation email or visit <a href="https://sparkcrew.jorgesuarez.com.mx">sparkcrew.jorgesuarez.com.mx</a></p>
-        
-        <a href="https://sparkcrew.jorgesuarez.com.mx" class="back-button">Back to SparkCrew</a>
-    </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <a href="https://jorgesuarez.com.mx/" class="home-site-link">← JorgeSuarez.com.mx</a>
+                <p>SparkCrew</p>
+            </div>
+        </div>
+    </footer>
+    <script src="script.js"></script>
 </body>
 </html>

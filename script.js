@@ -1,8 +1,56 @@
 // SparkCrew Landing Page JavaScript
-// Premium interactions and animations
+
+function currentLang() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('lang') === 'en') return 'en';
+    if (params.get('lang') === 'es') return 'es';
+    return localStorage.getItem('sparkcrew-lang') || 'es';
+}
+
+function applyLang(lang) {
+    const next = lang === 'en' ? 'en' : 'es';
+    document.documentElement.lang = next;
+    localStorage.setItem('sparkcrew-lang', next);
+    document.querySelectorAll('[data-es][data-en]').forEach((el) => {
+        const value = el.getAttribute('data-' + next);
+        if (!value) return;
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+            el.placeholder = value;
+        } else {
+            el.textContent = value;
+        }
+    });
+    if (document.querySelector('.waitlist-form')) {
+        document.title = next === 'en'
+            ? 'SparkCrew | AI C-Suite Partners for Bitrix24'
+            : 'SparkCrew | Partners de C-Suite con IA para Bitrix24';
+    } else if (document.querySelector('.hero-description')) {
+        document.title = next === 'en' ? 'Thank you | SparkCrew' : 'Gracias | SparkCrew';
+    }
+    const desc = document.querySelector('meta[data-meta="description"]');
+    if (desc) {
+        desc.setAttribute('content', desc.getAttribute('data-' + next));
+    }
+    document.querySelectorAll('.lang-btn').forEach((btn) => {
+        btn.setAttribute('aria-pressed', btn.getAttribute('data-lang') === next ? 'true' : 'false');
+    });
+}
+
+function initI18n() {
+    applyLang(currentLang());
+    document.querySelectorAll('.lang-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const lang = btn.getAttribute('data-lang');
+            const url = new URL(window.location.href);
+            url.searchParams.set('lang', lang);
+            history.replaceState({}, '', url);
+            applyLang(lang);
+        });
+    });
+}
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize all interactive components
+    initI18n();
     initNavigation();
     initFAQ();
     initScrollAnimations();
@@ -16,24 +64,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // === NAVIGATION ===
 function initNavigation() {
     const nav = document.querySelector('.nav');
+    if (!nav) return;
     const navHeight = nav.offsetHeight;
-    
-    // Navbar scroll behavior
-    let lastScrollY = window.scrollY;
-    
-    window.addEventListener('scroll', () => {
-        const currentScrollY = window.scrollY;
-        
-        if (currentScrollY > 100) {
-            nav.style.background = 'rgba(10, 10, 15, 0.95)';
-            nav.style.boxShadow = '0 4px 20px rgba(0, 212, 255, 0.1)';
-        } else {
-            nav.style.background = 'rgba(10, 10, 15, 0.85)';
-            nav.style.boxShadow = 'none';
-        }
-        
-        lastScrollY = currentScrollY;
-    });
     
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -54,6 +86,7 @@ function initNavigation() {
 // === FAQ ACCORDION ===
 function initFAQ() {
     const faqItems = document.querySelectorAll('.faq-item');
+    if (!faqItems.length) return;
     
     faqItems.forEach(item => {
         const question = item.querySelector('.faq-question');
@@ -276,7 +309,9 @@ function initFormHandling() {
         const originalText = submitButton.innerHTML;
         
         // Update button state
-        submitButton.innerHTML = '<span>Joining...</span>';
+        submitButton.innerHTML = currentLang() === 'en'
+            ? '<span>Joining...</span>'
+            : '<span>Enviando...</span>';
         submitButton.disabled = true;
         submitButton.style.opacity = '0.7';
         
@@ -454,15 +489,14 @@ function activateEasterEgg() {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-        color: var(--color-bg);
+        background: #FF6B35;
+        color: #22211F;
         padding: 2rem;
-        border-radius: var(--radius-lg);
+        border-radius: 12px;
         font-size: 1.2rem;
         font-weight: bold;
         text-align: center;
         z-index: 10000;
-        box-shadow: var(--shadow-glow);
     `;
     
     document.body.appendChild(message);
@@ -501,26 +535,25 @@ function initCountdownTimer() {
     countdownElement.className = 'countdown-timer';
     countdownElement.innerHTML = `
         <div class="countdown-header">
-            <span class="countdown-icon">⏰</span>
-            <span class="countdown-title">Early Bird Spots Closing Soon!</span>
+            <span class="countdown-title" data-es="Los lugares early bird se cierran pronto" data-en="Early bird spots closing soon">Los lugares early bird se cierran pronto</span>
         </div>
         <div class="countdown-display">
             <div class="countdown-unit">
                 <span class="countdown-value" id="countdown-hours">12</span>
-                <span class="countdown-label">Hours</span>
+                <span class="countdown-label" data-es="Horas" data-en="Hours">Horas</span>
             </div>
             <div class="countdown-separator">:</div>
             <div class="countdown-unit">
                 <span class="countdown-value" id="countdown-minutes">45</span>
-                <span class="countdown-label">Minutes</span>
+                <span class="countdown-label" data-es="Minutos" data-en="Minutes">Minutos</span>
             </div>
             <div class="countdown-separator">:</div>
             <div class="countdown-unit">
                 <span class="countdown-value" id="countdown-seconds">30</span>
-                <span class="countdown-label">Seconds</span>
+                <span class="countdown-label" data-es="Segundos" data-en="Seconds">Segundos</span>
             </div>
         </div>
-        <div class="countdown-message">Only 12 spots left at $149/month!</div>
+        <div class="countdown-message" data-es="Quedan 12 lugares a 149 USD al mes" data-en="Only 12 spots left at $149/month">Quedan 12 lugares a 149 USD al mes</div>
     `;
     
     // Insert after waitlist description
@@ -528,93 +561,7 @@ function initCountdownTimer() {
     if (waitlistDescription) {
         waitlistDescription.parentNode.insertBefore(countdownElement, waitlistDescription.nextSibling);
         
-        // Add CSS for countdown
-        const style = document.createElement('style');
-        style.textContent = `
-            .countdown-timer {
-                background: linear-gradient(135deg, var(--color-bg-secondary), var(--color-surface));
-                border: 2px solid var(--color-primary);
-                border-radius: var(--radius-lg);
-                padding: var(--spacing-md);
-                margin: var(--spacing-lg) 0;
-                text-align: center;
-                box-shadow: var(--shadow-glow);
-                animation: pulse 2s infinite;
-            }
-            
-            @keyframes pulse {
-                0%, 100% { box-shadow: var(--shadow-glow); }
-                50% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.5); }
-            }
-            
-            .countdown-header {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: var(--spacing-sm);
-                margin-bottom: var(--spacing-md);
-            }
-            
-            .countdown-icon {
-                font-size: 1.5rem;
-            }
-            
-            .countdown-title {
-                font-family: var(--font-display);
-                font-weight: 700;
-                color: var(--color-primary);
-                font-size: 1.1rem;
-            }
-            
-            .countdown-display {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: var(--spacing-sm);
-                margin-bottom: var(--spacing-md);
-            }
-            
-            .countdown-unit {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                background: var(--color-bg);
-                border-radius: var(--radius-md);
-                padding: var(--spacing-sm);
-                min-width: 70px;
-            }
-            
-            .countdown-value {
-                font-family: var(--font-display);
-                font-size: 2rem;
-                font-weight: 900;
-                color: var(--color-accent);
-                line-height: 1;
-            }
-            
-            .countdown-label {
-                font-size: 0.8rem;
-                color: var(--color-text-secondary);
-                margin-top: var(--spacing-xs);
-            }
-            
-            .countdown-separator {
-                font-family: var(--font-display);
-                font-size: 1.5rem;
-                color: var(--color-primary);
-                margin-bottom: 1rem;
-            }
-            
-            .countdown-message {
-                font-family: var(--font-body);
-                font-weight: 600;
-                color: var(--color-text-primary);
-                font-size: 1rem;
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Start countdown
+        applyLang(currentLang());
         startCountdown();
     }
 }
@@ -655,10 +602,10 @@ function startCountdown() {
                     if (countdownElement) {
                         countdownElement.innerHTML = `
                             <div class="countdown-finished">
-                                <span class="finished-icon">⏰</span>
-                                <span class="finished-message">Early Bird Spots Have Closed! Next batch: $299/month</span>
+                                <span class="finished-message" data-es="Los lugares early bird se cerraron. Siguiente lote: 299 USD al mes." data-en="Early bird spots have closed. Next batch: $299/month.">Los lugares early bird se cerraron. Siguiente lote: 299 USD al mes.</span>
                             </div>
                         `;
+                        applyLang(currentLang());
                     }
                     return;
                 }
@@ -673,8 +620,3 @@ function startCountdown() {
     const timer = setInterval(updateCountdown, 1000);
 }
 
-// Add countdown timer to initialization
-document.addEventListener('DOMContentLoaded', function() {
-    // ... existing initialization code ...
-    initCountdownTimer(); // Add this line
-});

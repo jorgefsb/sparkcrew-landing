@@ -81,6 +81,10 @@ python3 -m http.server 3000
 
 SparkCrew is a product experiment by [Sparkplug Technologies](https://getsparkplug.com) and uses its identity, not Jorge Suárez's personal brand.
 
+## License
+
+This repo has no license file, so Sparkplug Technologies keeps all rights to the code, the content and the brand. If you want to reuse something, ask first by opening an issue.
+
 ---
 
 <div align="center">

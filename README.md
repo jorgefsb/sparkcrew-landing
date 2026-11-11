@@ -7,7 +7,7 @@
 **[▶ Visit SparkCrew](https://sparkcrew.jorgesuarez.com.mx)** · Sparkplug Technologies
 
 <p align="center"><img src="docs/readme/tour.gif" width="720" alt="Walkthrough of SparkCrew · landing"></p>
-<p align="center"><sub>Real walkthrough of the live site, recorded 10 Nov 2026 in Chromium (1280×720). No retouching. <a href="docs/readme/tour.mp4">Watch the MP4 video</a></sub></p>
+<p align="center"><sub>Real walkthrough of the live site, recorded 10 Nov 2026 in Chromium (1280×720). No retouching. It plays once; reload the page to watch it again. <a href="docs/readme/tour.mp4">Watch the MP4 video</a></sub></p>
 
 ## What is it?
 
@@ -80,6 +80,10 @@ python3 -m http.server 3000
 ## Brand and credits
 
 SparkCrew is a product experiment by [Sparkplug Technologies](https://getsparkplug.com) and uses its identity, not Jorge Suárez's personal brand.
+
+## License
+
+This repo has no license file, so Sparkplug Technologies keeps all rights to the code, the content and the brand. If you want to reuse something, ask first by opening an issue.
 
 ---
 
